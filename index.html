@@ -23,87 +23,8 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap"
       rel="stylesheet"
     />
+    <link href="index.css" rel="stylesheet" />
     <title>Home | Fairbanks.io</title>
-    <style>
-      html {
-        background: url("https://source.unsplash.com/1600x900/weekly?nature,water,city")
-          no-repeat center center fixed;
-        background-color: #eee;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        background-size: cover;
-        font-family: "Montserrat", sans-serif;
-      }
-      #outer {
-        width: 100%;
-        margin-top: 10%;
-      }
-      #inner {
-        display: table;
-        margin: 0 auto;
-      }
-      .box {
-        padding: 0.5rem;
-        background-color: rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(5px);
-      }
-      .user-circle {
-        display: inline-block;
-        width: 200px;
-        height: 200px;
-        border: 1.25px solid #ababab;
-        border-radius: 50%;
-
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: cover;
-      }
-      .user-img {
-        background-image: url(profile.jpg);
-      }
-      h1 {
-        font-weight: bold;
-        color: #eee;
-        font-size: 60px;
-        text-align: center;
-        margin-top: 15px;
-        margin-bottom: 0px;
-        cursor: default;
-      }
-      th, td {
-        padding: 32px;
-      }
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-      .tooltip {
-        position: relative;
-        display: inline-block;
-      }
-      .tooltip .tooltiptext {
-        margin-top: 10px;
-        visibility: hidden;
-        width: 100px;
-        background-color: black;
-        color: #eee;
-        text-align: center;
-        padding: 5px 0;
-        border-radius: 6px;
-        font-family: "Montserrat", sans-serif;
-
-        position: absolute;
-        z-index: 1;
-        top: 100%;
-        left: 50%;
-        margin-left: -50px; /* Use half of the width (120/2 = 60), to center the tooltip */
-      }
-      .tooltip:hover .tooltiptext {
-        visibility: visible;
-        transition-delay: 1.5s;
-      }
-    </style>
   </head>
   <body>
     <div id="outer">
@@ -124,7 +45,7 @@
                   rel="noopener noreferrer"
                 >
                   <div class="tooltip">
-                    <i class="fab fa-2x fa-github"></i>
+                    <i class="fab fa-2x fa-github github"></i>
                     <span class="tooltiptext">GitHub</span>
                   </div>
                 </a>
