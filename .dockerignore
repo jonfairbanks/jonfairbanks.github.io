@@ -7,11 +7,5 @@ npm-debug.log
 *.md
 *.example
 LICENSE
-logo.*
-*.png
-*.gif
-*.jpg
-*.bmpr
-*.svg
 *.sample
 .env*
