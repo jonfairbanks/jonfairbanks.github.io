@@ -1,10 +1,11 @@
 # jonfairbanks.github.io
 
-![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/jonfairbanks/jonfairbanks-homepage.svg)
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/jonfairbanks/jonfairbanks-homepage.svg)
+![GitHub Workflow Status](<https://img.shields.io/github/workflow/status/jonfairbanks/jonfairbanks.github.io/Create%20Release(s)?label=Docker%20Build>)
 ![GitHub top language](https://img.shields.io/github/languages/top/jonfairbanks/jonfairbanks.github.io.svg)
-![Docker Pulls](https://img.shields.io/docker/pulls/jonfairbanks/jonfairbanks-homepage.svg)
+![Docker Pulls](https://img.shields.io/docker/pulls/jonfairbanks/jonfairbanks-homepage)
 ![GitHub last commit](https://img.shields.io/github/last-commit/jonfairbanks/jonfairbanks.github.io.svg)
+![Lines of code](https://img.shields.io/tokei/lines/github/jonfairbanks/jonfairbanks.github.io)
+![License](https://img.shields.io/github/license/jonfairbanks/jonfairbanks.github.io.svg?style=flat)
 
 #### Personal Home Page
 
