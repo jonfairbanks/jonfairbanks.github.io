@@ -9,3 +9,4 @@ npm-debug.log
 LICENSE
 *.sample
 .env*
+.prettier*
