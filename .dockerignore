@@ -10,3 +10,5 @@ LICENSE
 *.sample
 .env*
 .prettier*
+chart/
+Dockerfile
