@@ -95,7 +95,7 @@ jobs:
           release_name: Docker Release v${{ steps.update-versions.outputs.version }}
           body: |
             The latest version(s) can be launched with:
-              - `docker run -d -p 8080:8080 --name jonfairbanks-homepage --restart always jonfairbanks/jonfairbanks-homepage:${{ steps.update-versions.outputs.version }}`
+              - `docker run -d -p 80:80 --name jonfairbanks-homepage --restart always jonfairbanks/jonfairbanks-homepage:${{ steps.update-versions.outputs.version }}`
           draft: false
           prerelease: false
 
