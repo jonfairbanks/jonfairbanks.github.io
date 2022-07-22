@@ -104,7 +104,7 @@ jobs:
         uses: bsord/helm-push@v4
         with:
           useOCIRegistry: true
-          registry-url: https://ghcr.io/jonfairbanks/jonfairbanks-homepage
+          registry-url: oci://ghcr.io/jonfairbanks/jonfairbanks-homepage
           username: jonfairbanks
           access-token: ${{ secrets.GITHUB_TOKEN }}
           force: true
