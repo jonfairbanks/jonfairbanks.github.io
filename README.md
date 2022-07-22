@@ -5,7 +5,6 @@
 ![Docker Pulls](https://img.shields.io/docker/pulls/jonfairbanks/jonfairbanks-homepage)
 ![GitHub last commit](https://img.shields.io/github/last-commit/jonfairbanks/jonfairbanks.github.io.svg)
 ![Lines of code](https://img.shields.io/tokei/lines/github/jonfairbanks/jonfairbanks.github.io)
-![License](https://img.shields.io/github/license/jonfairbanks/jonfairbanks.github.io.svg?style=flat)
 
 #### Personal Home Page
 
