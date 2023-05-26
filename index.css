@@ -41,13 +41,6 @@ html {
   background-image: url(profile.webp);
 }
 
-/* Media Query for Mobile Devices */
-@media (max-width: 48em) {
-  #outer {
-    margin-top: 20%;
-  }
-}
-
 h1 {
   font-weight: bold;
   color: #eee;
@@ -59,7 +52,7 @@ h1 {
 }
 
 th, td {
-  padding: 1em;
+  padding: 2em;
 }
 
 a {
@@ -117,4 +110,13 @@ a {
 
 .fa-envelope:hover {
   color: #e9b54e;
+}
+
+@media (max-width: 48em) {
+  #outer {
+    margin-top: 20%;
+  }
+  th, td {
+    padding: 1em;
+  }
 }
