@@ -8,23 +8,27 @@ html {
   background-size: cover;
   font-family: "Montserrat", sans-serif;
 }
+
 #outer {
   width: 100%;
   margin-top: 10%;
 }
+
 #inner {
   display: table;
   margin: 0 auto;
 }
+
 .box {
-  padding: 0.5rem;
+  padding: 1em;
   background-color: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(5px);
 }
+
 .user-circle {
   display: inline-block;
-  width: 200px;
-  height: 200px;
+  width: 12.5em;
+  height: 12.5em;
   border: 1.25px solid #ababab;
   border-radius: 50%;
 
@@ -32,65 +36,87 @@ html {
   background-position: center center;
   background-size: cover;
 }
+
 .user-img {
   background-image: url(profile.webp);
 }
+
 h1 {
   font-weight: bold;
   color: #eee;
-  font-size: 60px;
+  font-size: 3.75em;
   text-align: center;
-  margin-top: 15px;
-  margin-bottom: 0px;
+  margin-top: 0.25em;
+  margin-bottom: 0;
   cursor: default;
 }
+
 th, td {
-  padding: 32px;
+  padding: 2em;
 }
+
 a {
   color: inherit;
   text-decoration: none;
 }
+
 .tooltip {
   position: relative;
   display: inline-block;
 }
+
 .tooltip .tooltiptext {
-  margin-top: 10px;
+  margin-top: 0.95em;
   visibility: hidden;
-  width: 100px;
+  width: 5.5em;
   background-color: black;
   color: #eee;
   text-align: center;
   padding: 5px 0;
-  border-radius: 6px;
+  border-radius: 5px;
   font-family: "Montserrat", sans-serif;
 
   position: absolute;
   z-index: 1;
   top: 100%;
   left: 50%;
-  margin-left: -50px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  margin-left: -2.75em;
 }
+
 .tooltip:hover .tooltiptext {
   visibility: visible;
-  transition-delay: 1.5s;
+  transition-delay: 0.5s;
 }
+
 .fa-github:hover {
   color: #5e539c;
 }
+
 .fa-linkedin:hover {
   color: #0d97bf;
 }
+
 .fa-paypal:hover {
   color: #003082;
 }
+
 .fa-anchor:hover {
   color: #257b9f;
 }
+
 .fa-docker:hover {
   color: #007cff;
 }
+
 .fa-envelope:hover {
   color: #e9b54e;
+}
+
+@media (max-width: 48em) {
+  #outer {
+    margin-top: 20%;
+  }
+  th, td {
+    padding: 1em;
+  }
 }
