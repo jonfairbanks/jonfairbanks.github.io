@@ -2,29 +2,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=UA-118884090-2"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "UA-118884090-2");
-    </script>
-    <script
-      src="https://kit.fontawesome.com/57cf97061f.js"
-      crossorigin="anonymous"
-    ></script>
+    <title>Home | Fairbanks.io</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap"
       rel="stylesheet"
     />
     <link href="index.css" rel="stylesheet" />
-    <title>Home | Fairbanks.io</title>
   </head>
   <body>
     <div id="outer">
@@ -111,11 +94,27 @@
         </div>
       </div>
     </div>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      src="https://www.googletagmanager.com/gtag/js?id=UA-118884090-2"
+      async
+    ></script>
+    <script
+      src="https://kit.fontawesome.com/57cf97061f.js"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <script>
+      function decryptEmail(encoded) {
+        var address = atob(encoded);
+        window.location.href = "mailto:" + address;
+      }
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "UA-118884090-2");
+    </script>
   </body>
 </html>
-<script>
-  function decryptEmail(encoded) {
-    var address = atob(encoded);
-    window.location.href = "mailto:" + address;
-  }
-</script>
