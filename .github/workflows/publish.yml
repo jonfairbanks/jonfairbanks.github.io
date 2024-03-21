@@ -34,7 +34,9 @@ jobs:
         run: npm run build --output-path=./out
 
       - name: View output
-        run: pwd && ls && ls ../
+        run: |
+          pwd
+          ls -la out
 
       - name: Upload artifact 📡
         uses: actions/upload-pages-artifact@v3
