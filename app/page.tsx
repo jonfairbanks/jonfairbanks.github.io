@@ -17,8 +17,6 @@ const onesans = AR_One_Sans({
 export default function Home() {
   return (
     <WavyBackground className={`max-w-4xl mx-auto pb-40 ${onesans.className}`}>
-      &nbsp;
-      &nbsp;
       <div>
         <p className="text-5xl md:text-6xl lg:text-7xl text-white font-bold inter-var text-center" style={{cursor: 'default'}}>
           Fairbanks.io
