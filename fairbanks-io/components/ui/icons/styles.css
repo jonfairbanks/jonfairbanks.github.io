@@ -1,0 +1,66 @@
+.icon-container {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* GitHub */
+
+.github-icon {
+    transition: color 0.75s ease;
+}
+
+.github-icon:hover {
+    color: #5e539c;
+}
+
+/* LinkedIn */
+
+.linkedin-icon {
+    transition: color 0.75s ease;
+}
+
+.linkedin-icon:hover {
+    color: #0d97bf;
+}
+
+/* PayPal */
+
+.paypal-icon {
+    transition: color 0.75s ease;
+}
+
+.paypal-icon:hover {
+    color: #003082;
+}
+
+/* Helm */
+
+.helm-icon {
+    transition: color 0.75s ease;
+}
+
+.helm-icon:hover {
+    color: #257b9f;
+}
+
+/* Docker */
+
+.docker-icon {
+    transition: color 0.75s ease;
+}
+
+.docker-icon:hover {
+    color: #007cff;
+}
+
+/* Email */
+
+.email-icon {
+    transition: color 0.75s ease;
+}
+
+.email-icon:hover {
+    color: #e9b54e;
+}
