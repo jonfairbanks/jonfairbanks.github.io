@@ -36,7 +36,7 @@ jobs:
       - name: View output
         run: |
           pwd
-          ls -la out
+          ls -lhr
 
       - name: Upload artifact 📡
         uses: actions/upload-pages-artifact@v3
