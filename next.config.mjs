@@ -3,6 +3,7 @@
 const nextConfig = {
     basePath: "/",
     output: "export", // Enable static exports
+    distDir: "out",
     reactStrictMode: true,
 };
 
