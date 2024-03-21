@@ -8,8 +8,7 @@ export const HelmIcon = () => {
     <div className="icon-container">
       <FontAwesomeIcon
         icon={faAnchor}
-        className="helm-icon"
-        style={{ fontSize: 42 }}
+        className="helm-icon text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
       />
     </div>
   );

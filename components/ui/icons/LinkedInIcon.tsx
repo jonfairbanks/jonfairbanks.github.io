@@ -8,8 +8,7 @@ export const LinkedInIcon = () => {
     <div className="icon-container">
       <FontAwesomeIcon
         icon={faLinkedin}
-        className="linkedin-icon"
-        style={{ fontSize: 42 }}
+        className="linkedin-icon text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
       />
     </div>
   );

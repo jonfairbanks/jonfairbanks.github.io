@@ -16,8 +16,7 @@ const EmailIcon = () => {
     <div>
       <FontAwesomeIcon
         icon={faEnvelope}
-        className="email-icon"
-        style={{ fontSize: 42 }}
+        className="email-icon text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
       />
     </div>
   );
