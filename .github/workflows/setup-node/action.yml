@@ -12,10 +12,10 @@ runs:
       id: cache_dependencies
       uses: actions/cache@v3
       with:
-        path: fairbanks-io/node_modules
-        key: node-modules-${{ hashFiles('fairbanks-io/package-lock.json') }}
+        path: node_modules
+        key: node-modules-${{ hashFiles('package-lock.json') }}
 
     - name: Install dependencies 🔧
       shell: bash
       if: steps.cache_dependencies.outputs.cache-hit != 'true'
-      run: cd fairbanks-io && npm ci
+      run: npm ci

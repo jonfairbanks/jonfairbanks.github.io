@@ -2,7 +2,7 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-    // basePath: "/fairbanks-io",
+    basePath: "/fairbanks-io",
     output: "export",  // Enable static exports
     reactStrictMode: true,
 };
