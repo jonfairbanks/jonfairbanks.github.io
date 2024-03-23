@@ -7,21 +7,26 @@ import { DockerIcon } from "../components/ui/icons/DockerIcon"
 import { EmailComponent } from "../components/ui/icons/EmailIcon"
 import { SubtitleGenerator } from "../components/ui/subtitle-generator"
 
-import { AR_One_Sans } from 'next/font/google'
+import { League_Spartan } from 'next/font/google'
 
-const onesans = AR_One_Sans({
+const league = League_Spartan({
   weight: '400',
   subsets: ['latin'],
 })
 
 export default function Home() {
   return (
-    <WavyBackground className={`max-w-4xl mx-auto pb-40 ${onesans.className}`}>
+    <WavyBackground className={`max-w-4xl mx-auto pb-40 ${league.className}`}>
       <div>
-        <p className="text-5xl md:text-6xl lg:text-7xl text-white font-bold inter-var text-center" style={{cursor: 'default'}}>
+        {/* <p className="text-5xl md:text-6xl lg:text-7xl text-white font-bold inter-var text-center" style={{cursor: 'default'}}>
           Fairbanks.io
-        </p>
-        <SubtitleGenerator />
+        </p> */}
+        <div id="logo" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <img src="logo.svg" alt="Fairbanks.io"/>
+        </div>
+        <div>
+          <SubtitleGenerator />
+        </div>
       </div>
       <br/>
       <div className="grid grid-cols-6">
