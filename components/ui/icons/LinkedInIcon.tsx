@@ -5,11 +5,9 @@ import './styles.css';
 
 export const LinkedInIcon = () => {
   return (
-    <div className="icon-container">
-      <FontAwesomeIcon
-        icon={faLinkedin}
-        className="linkedin-icon text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
-      />
-    </div>
+    <FontAwesomeIcon
+      icon={faLinkedin}
+      className="linkedin-icon text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
+    />
   );
 };

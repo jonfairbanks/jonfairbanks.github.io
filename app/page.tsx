@@ -25,7 +25,7 @@ export default function Home() {
       </div>
       <br/>
       <div className="grid grid-cols-6">
-        <div>
+        <div className="icon-container">
           <a
             href="https://github.com/jonfairbanks"
             target="_blank"
@@ -34,7 +34,7 @@ export default function Home() {
             <GitHubIcon />
           </a>
         </div>
-        <div>
+        <div className="icon-container">
           <a
             href="https://www.linkedin.com/in/jonfairbanks"
             target="_blank"
@@ -43,7 +43,7 @@ export default function Home() {
             <LinkedInIcon />
           </a>
         </div>
-        <div>
+        <div className="icon-container">
           <a
             href="https://paypal.me/fairbanks"
             target="_blank"
@@ -52,7 +52,7 @@ export default function Home() {
             <PayPalIcon />
           </a>
         </div>
-        <div>
+        <div className="icon-container">
           <a
             href="https://jonfairbanks.github.io/helm-charts"
             target="_blank"
@@ -61,7 +61,7 @@ export default function Home() {
             <HelmIcon />
           </a>
         </div>
-        <div>
+        <div className="icon-container">
           <a
             href="https://hub.docker.com/u/jonfairbanks"
             target="_blank"
@@ -70,7 +70,7 @@ export default function Home() {
             <DockerIcon />
           </a>
         </div>
-        <div>
+        <div className="icon-container">
           <EmailComponent />
         </div>
       </div>

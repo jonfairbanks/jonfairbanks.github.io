@@ -5,11 +5,9 @@ import './styles.css';
 
 export const GitHubIcon = () => {
   return (
-    <div className="icon-container">
-      <FontAwesomeIcon
-        icon={faGithub}
-        className="github-icon text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
-      />
-    </div>
+    <FontAwesomeIcon
+      icon={faGithub}
+      className="github-icon text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
+    />
   );
 };

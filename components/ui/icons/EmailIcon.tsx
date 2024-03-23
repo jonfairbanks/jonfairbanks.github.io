@@ -13,22 +13,18 @@ const openEmailClient = () => {
 
 const EmailIcon = () => {
   return (
-    <div>
-      <FontAwesomeIcon
-        icon={faEnvelope}
-        className="email-icon text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
-      />
-    </div>
+    <FontAwesomeIcon
+      icon={faEnvelope}
+      className="email-icon text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
+    />
   );
 };
 
 export const EmailComponent = () => {
   return (
-    <div className="icon-container">
-      <button onClick={openEmailClient}>
-        <EmailIcon />
-      </button>
-    </div>
+    <button onClick={openEmailClient}>
+      <EmailIcon />
+    </button>
   );
 };
 
