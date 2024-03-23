@@ -5,11 +5,9 @@ import './styles.css';
 
 export const HelmIcon = () => {
   return (
-    <div className="icon-container">
-      <FontAwesomeIcon
-        icon={faAnchor}
-        className="helm-icon text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
-      />
-    </div>
+    <FontAwesomeIcon
+      icon={faAnchor}
+      className="helm-icon text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
+    />
   );
 };
