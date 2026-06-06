@@ -22,9 +22,8 @@ const EmailIcon = () => {
 
 export const EmailComponent = () => {
   return (
-    <button onClick={openEmailClient}>
+    <button onClick={openEmailClient} aria-label="Email Jon Fairbanks">
       <EmailIcon />
     </button>
   );
 };
-

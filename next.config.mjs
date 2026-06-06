@@ -2,7 +2,7 @@
 
 const nextConfig = {
     output: "export", // Enable static exports
-    distDir: "out",
+    devIndicators: false,
     reactStrictMode: true,
 };
 

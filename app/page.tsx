@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { WavyBackground } from "../components/ui/wavy-background";
 import { LinkedInIcon } from "../components/ui/icons/LinkedInIcon"
 import { PayPalIcon } from "../components/ui/icons/PayPalIcon"
@@ -22,7 +23,7 @@ export default function Home() {
           Fairbanks.io
         </p> */}
         <div id="logo" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <img src="logo.svg" alt="Fairbanks.io"/>
+          <Image src="/logo.svg" alt="Fairbanks.io" width={553} height={142} priority />
         </div>
         <div>
           <SubtitleGenerator />
@@ -35,6 +36,7 @@ export default function Home() {
             href="https://github.com/jonfairbanks"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="GitHub profile"
           >
             <GitHubIcon />
           </a>
@@ -44,6 +46,7 @@ export default function Home() {
             href="https://www.linkedin.com/in/jonfairbanks"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="LinkedIn profile"
           >
             <LinkedInIcon />
           </a>
@@ -53,6 +56,7 @@ export default function Home() {
             href="https://paypal.me/fairbanks"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="PayPal profile"
           >
             <PayPalIcon />
           </a>
@@ -62,6 +66,7 @@ export default function Home() {
             href="https://jonfairbanks.github.io/helm-charts"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Helm charts"
           >
             <HelmIcon />
           </a>
@@ -71,6 +76,7 @@ export default function Home() {
             href="https://hub.docker.com/u/jonfairbanks"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Docker Hub profile"
           >
             <DockerIcon />
           </a>

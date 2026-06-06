@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import { motion, stagger, useAnimate } from "framer-motion";
 import { cn } from "@/utils/cn";
 
@@ -10,7 +10,7 @@ export const TextGenerateEffect = ({
   className?: string;
 }) => {
   const [scope, animate] = useAnimate();
-  const wordsArray = useRef(words.split(" "));
+  const wordsArray = useMemo(() => words.split(" "), [words]);
   
   useEffect(() => {
     animate(
@@ -28,7 +28,7 @@ export const TextGenerateEffect = ({
   const renderWords = () => {
     return (
       <motion.div ref={scope}>
-        {wordsArray.current.map((word, idx) => {
+        {wordsArray.map((word, idx) => {
           return (
             <motion.span
               key={word + idx}
