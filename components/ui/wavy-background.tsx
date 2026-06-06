@@ -57,16 +57,23 @@ export const WavyBackground = ({
 
     const isSafari =
       navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
+    const safariCanvasOffset = isSafari ? `-${safariBlurOverscan}px` : "";
 
     canvas.style.filter = isSafari ? `blur(${blur}px)` : "";
-    canvas.style.inset = isSafari ? `-${safariBlurOverscan}px` : "";
+    canvas.style.top = safariCanvasOffset;
+    canvas.style.right = safariCanvasOffset;
+    canvas.style.bottom = safariCanvasOffset;
+    canvas.style.left = safariCanvasOffset;
 
     const ctx = canvas.getContext("2d");
 
     if (!ctx) {
       return () => {
         canvas.style.filter = "";
-        canvas.style.inset = "";
+        canvas.style.top = "";
+        canvas.style.right = "";
+        canvas.style.bottom = "";
+        canvas.style.left = "";
       };
     }
 
@@ -116,7 +123,10 @@ export const WavyBackground = ({
       window.removeEventListener("resize", resizeCanvas);
       cancelAnimationFrame(animationId);
       canvas.style.filter = "";
-      canvas.style.inset = "";
+      canvas.style.top = "";
+      canvas.style.right = "";
+      canvas.style.bottom = "";
+      canvas.style.left = "";
     };
   }, [animationSpeed, backgroundFill, blur, safariBlurOverscan, waveColors, waveOpacity, waveWidth]);
 
