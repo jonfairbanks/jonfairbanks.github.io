@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import { motion, stagger, useAnimate } from "framer-motion";
 import { cn } from "@/utils/cn";
 
@@ -10,7 +10,7 @@ export const TextGenerateEffect = ({
   className?: string;
 }) => {
   const [scope, animate] = useAnimate();
-  const wordsArray = useRef(words.split(" "));
+  const wordsArray = useMemo(() => words.split(" "), [words]);
   
   useEffect(() => {
     animate(
@@ -28,11 +28,11 @@ export const TextGenerateEffect = ({
   const renderWords = () => {
     return (
       <motion.div ref={scope}>
-        {wordsArray.current.map((word, idx) => {
+        {wordsArray.map((word, idx) => {
           return (
             <motion.span
               key={word + idx}
-              className="text-md md:text-2xl mt-4 font-normal inter-var text-center opacity-0"
+              className="text-sm sm:text-base md:text-2xl mt-4 font-normal inter-var text-center opacity-0"
             >
               {word}{" "}
             </motion.span>
@@ -44,7 +44,7 @@ export const TextGenerateEffect = ({
 
   return (
     <div className={cn("font-bold", className)}>
-      <div className="mt-4">
+      <div className="mt-3 sm:mt-4">
         <div className="text-2xl leading-snug text-center tracking-wide " style={{cursor: 'default', color: "#E4E2DE"}}>
           {renderWords()}
         </div>
