@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Fairbanks.io
 
-## Getting Started
+Source for [fairbanks.io](https://fairbanks.io), a static Next.js site deployed with GitHub Pages.
 
-First, run the development server:
+The app renders a single landing page with animated canvas ribbons, profile/action buttons, and Google Analytics click tracking for the outbound controls.
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) with App Router
+- React
+- Tailwind CSS
+- Font Awesome and Lucide icons
+- Playwright for browser-level tests
+- GitHub Actions for quality checks and GitHub Pages deployment
+
+## Local Development
+
+Install dependencies:
+
+```bash
+npm ci
+```
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The main page lives in [app/page.tsx](app/page.tsx). Shared UI components are under [components](components).
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Quality Checks
 
-## Learn More
+Run the full local validation set:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+npm test
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Useful individual commands:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+npm run lint      # ESLint
+npm test          # Playwright E2E tests
+npm run build     # Static Next.js export
+npm audit         # Dependency audit
+```
 
-## Deploy on Vercel
+The production build uses `output: "export"` in [next.config.mjs](next.config.mjs), so `npm run build` emits the static site to `out/`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+GitHub Pages deploys the static export through [publish.yml](.github/workflows/publish.yml).
+
+Deployment flow:
+
+1. Changes are developed on `develop`.
+2. Pull requests target the production branch.
+3. Merges to `master` or `main` trigger `publish-to-github-pages`.
+4. The workflow builds the static Next.js export, uploads `out/`, and deploys it with GitHub Pages.
+
+The live custom domain is [fairbanks.io](https://fairbanks.io).
+
+## CI
+
+[quality.yml](.github/workflows/quality.yml) runs on pull requests to `master`/`main` and pushes to `develop`.
+
+It verifies:
+
+- Dependency installation with the shared setup action
+- Playwright Chromium browser installation
+- `npm run lint`
+- `npm test`
+- `npm run build`
+- `npm audit`
+
+Workflow actions are pinned by commit SHA with version comments.
+
+## Analytics
+
+Google Analytics is configured in [app/layout.tsx](app/layout.tsx). Outbound profile/action controls emit a `button_click` event through [utils/analytics.ts](utils/analytics.ts), including:
+
+- `button_target`
+- `button_label`
+- `link_url`
