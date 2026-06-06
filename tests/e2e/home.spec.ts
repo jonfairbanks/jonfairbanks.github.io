@@ -38,6 +38,86 @@ test.describe("homepage", () => {
     await expect(page.getByRole("button", { name: "Email Jon Fairbanks" })).toBeVisible();
   });
 
+  test("tracks button clicks in Google Analytics", async ({ page }) => {
+    await page.goto("/");
+    await page.evaluate(() => {
+      const analyticsWindow = window as typeof window & { dataLayer: unknown[] };
+
+      analyticsWindow.dataLayer = [];
+      document.addEventListener("click", (event) => event.preventDefault(), true);
+    });
+
+    await page.getByRole("link", { name: "GitHub profile" }).click();
+    await page.getByRole("link", { name: "LinkedIn profile" }).click();
+    await page.getByRole("link", { name: "PayPal profile" }).click();
+    await page.getByRole("link", { name: "Helm charts" }).click();
+    await page.getByRole("link", { name: "Docker Hub profile" }).click();
+    await page.getByRole("button", { name: "Email Jon Fairbanks" }).click();
+
+    const events = await page.evaluate(() =>
+      (window as typeof window & { dataLayer: unknown[] }).dataLayer
+        .map((entry) => Array.from(entry as IArguments))
+        .filter((entry) => entry[0] === "event" && entry[1] === "button_click")
+    );
+
+    expect(events).toEqual([
+      [
+        "event",
+        "button_click",
+        {
+          button_label: "GitHub profile",
+          button_target: "github",
+          link_url: "https://github.com/jonfairbanks",
+        },
+      ],
+      [
+        "event",
+        "button_click",
+        {
+          button_label: "LinkedIn profile",
+          button_target: "linkedin",
+          link_url: "https://www.linkedin.com/in/jonfairbanks",
+        },
+      ],
+      [
+        "event",
+        "button_click",
+        {
+          button_label: "PayPal profile",
+          button_target: "paypal",
+          link_url: "https://paypal.me/fairbanks",
+        },
+      ],
+      [
+        "event",
+        "button_click",
+        {
+          button_label: "Helm charts",
+          button_target: "helm_charts",
+          link_url: "https://jonfairbanks.github.io/helm-charts",
+        },
+      ],
+      [
+        "event",
+        "button_click",
+        {
+          button_label: "Docker Hub profile",
+          button_target: "docker_hub",
+          link_url: "https://hub.docker.com/u/jonfairbanks",
+        },
+      ],
+      [
+        "event",
+        "button_click",
+        {
+          button_label: "Email Jon Fairbanks",
+          button_target: "email",
+          link_url: "mailto:jon@fairbanks.io",
+        },
+      ],
+    ]);
+  });
+
   test("stays within a single viewport", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto("/");

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { TrackedLink } from "../components/analytics/TrackedLink";
 import { WavyBackground } from "../components/ui/wavy-background";
 import { LinkedInIcon } from "../components/ui/icons/LinkedInIcon"
 import { PayPalIcon } from "../components/ui/icons/PayPalIcon"
@@ -32,54 +33,64 @@ export default function Home() {
       <br/>
       <div className="grid grid-cols-6">
         <div className="icon-container">
-          <a
+          <TrackedLink
             href="https://github.com/jonfairbanks"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub profile"
+            analyticsTarget="github"
+            analyticsLabel="GitHub profile"
           >
             <GitHubIcon />
-          </a>
+          </TrackedLink>
         </div>
         <div className="icon-container">
-          <a
+          <TrackedLink
             href="https://www.linkedin.com/in/jonfairbanks"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn profile"
+            analyticsTarget="linkedin"
+            analyticsLabel="LinkedIn profile"
           >
             <LinkedInIcon />
-          </a>
+          </TrackedLink>
         </div>
         <div className="icon-container">
-          <a
+          <TrackedLink
             href="https://paypal.me/fairbanks"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="PayPal profile"
+            analyticsTarget="paypal"
+            analyticsLabel="PayPal profile"
           >
             <PayPalIcon />
-          </a>
+          </TrackedLink>
         </div>
         <div className="icon-container">
-          <a
+          <TrackedLink
             href="https://jonfairbanks.github.io/helm-charts"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Helm charts"
+            analyticsTarget="helm_charts"
+            analyticsLabel="Helm charts"
           >
             <HelmIcon />
-          </a>
+          </TrackedLink>
         </div>
         <div className="icon-container">
-          <a
+          <TrackedLink
             href="https://hub.docker.com/u/jonfairbanks"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Docker Hub profile"
+            analyticsTarget="docker_hub"
+            analyticsLabel="Docker Hub profile"
           >
             <DockerIcon />
-          </a>
+          </TrackedLink>
         </div>
         <div className="icon-container">
           <EmailComponent />

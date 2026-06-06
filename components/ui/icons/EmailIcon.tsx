@@ -3,11 +3,17 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons"
+import { trackButtonClick } from "@/utils/analytics";
 import './styles.css';
 
 const openEmailClient = () => {
   const encryptedEmail = 'am9uQGZhaXJiYW5rcy5pbw=='; // Replace this with your encrypted email
   const emailAddress = atob(encryptedEmail); // Decode the encrypted email
+  trackButtonClick({
+    target: "email",
+    label: "Email Jon Fairbanks",
+    url: `mailto:${emailAddress}`,
+  });
   window.location.href = `mailto:${emailAddress}`;
 };
 
