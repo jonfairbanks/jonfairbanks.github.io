@@ -80,6 +80,7 @@ test.describe("homepage", () => {
     try {
       await page.goto("/");
       await expect(page.locator("canvas#canvas")).toHaveCSS("filter", "blur(10px)");
+      await expect(page.locator("canvas#canvas")).toHaveCSS("inset", "-30px");
       await page.waitForTimeout(500);
 
       expect(consoleErrors.join("\n")).not.toContain(

@@ -36,6 +36,7 @@ export const WavyBackground = ({
 } & React.HTMLAttributes<HTMLDivElement>) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const waveColors = useMemo(() => colors ?? defaultWaveColors, [colors]);
+  const safariBlurOverscan = Math.ceil(blur * 3);
   const animationSpeed = useMemo(() => {
     switch (speed) {
       case "slow":
@@ -58,12 +59,14 @@ export const WavyBackground = ({
       navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
 
     canvas.style.filter = isSafari ? `blur(${blur}px)` : "";
+    canvas.style.inset = isSafari ? `-${safariBlurOverscan}px` : "";
 
     const ctx = canvas.getContext("2d");
 
     if (!ctx) {
       return () => {
         canvas.style.filter = "";
+        canvas.style.inset = "";
       };
     }
 
@@ -74,8 +77,8 @@ export const WavyBackground = ({
     let animationId: number;
 
     const resizeCanvas = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      width = canvas.width = window.innerWidth + (isSafari ? safariBlurOverscan * 2 : 0);
+      height = canvas.height = window.innerHeight + (isSafari ? safariBlurOverscan * 2 : 0);
       ctx.filter = `blur(${blur}px)`;
     };
 
@@ -113,8 +116,9 @@ export const WavyBackground = ({
       window.removeEventListener("resize", resizeCanvas);
       cancelAnimationFrame(animationId);
       canvas.style.filter = "";
+      canvas.style.inset = "";
     };
-  }, [animationSpeed, backgroundFill, blur, waveColors, waveOpacity, waveWidth]);
+  }, [animationSpeed, backgroundFill, blur, safariBlurOverscan, waveColors, waveOpacity, waveWidth]);
 
   return (
     <div
