@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/utils/cn";
-import React, { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { createNoise3D } from "simplex-noise";
 
 const defaultWaveColors = [
@@ -11,11 +11,6 @@ const defaultWaveColors = [
   "#F9AB55",
   "#F7F5FB",
 ];
-
-const subscribeToUserAgent = () => () => {};
-const getServerSafariSnapshot = () => false;
-const getSafariSnapshot = () =>
-  navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
 
 export const WavyBackground = ({
   children,
@@ -40,11 +35,6 @@ export const WavyBackground = ({
   waveOpacity?: number;
 } & React.HTMLAttributes<HTMLDivElement>) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const isSafari = useSyncExternalStore(
-    subscribeToUserAgent,
-    getSafariSnapshot,
-    getServerSafariSnapshot
-  );
   const waveColors = useMemo(() => colors ?? defaultWaveColors, [colors]);
   const animationSpeed = useMemo(() => {
     switch (speed) {
@@ -59,10 +49,22 @@ export const WavyBackground = ({
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
 
-    if (!canvas || !ctx) {
+    if (!canvas) {
       return;
+    }
+
+    const isSafari =
+      navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
+
+    canvas.style.filter = isSafari ? `blur(${blur}px)` : "";
+
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+      return () => {
+        canvas.style.filter = "";
+      };
     }
 
     const noise = createNoise3D();
@@ -110,6 +112,7 @@ export const WavyBackground = ({
     return () => {
       window.removeEventListener("resize", resizeCanvas);
       cancelAnimationFrame(animationId);
+      canvas.style.filter = "";
     };
   }, [animationSpeed, backgroundFill, blur, waveColors, waveOpacity, waveWidth]);
 
@@ -124,9 +127,6 @@ export const WavyBackground = ({
         className="absolute inset-0 z-0"
         ref={canvasRef}
         id="canvas"
-        style={{
-          ...(isSafari ? { filter: `blur(${blur}px)` } : {}),
-        }}
       ></canvas>
       <div className={cn("relative z-10", className)} {...props}>
         {children}
