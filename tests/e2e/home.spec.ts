@@ -143,6 +143,42 @@ test.describe("homepage", () => {
     expect(overflow.scrollHeight).toBe(overflow.clientHeight);
   });
 
+  test("keeps the landing content reachable on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+
+    const layout = await page.evaluate(() => {
+      const logo = document.querySelector("#logo");
+      const controls = document.querySelectorAll(".icon-container");
+      const viewport = {
+        width: document.documentElement.clientWidth,
+        height: document.documentElement.clientHeight,
+      };
+      const rects = [logo, ...Array.from(controls)].map((element) => {
+        const rect = element?.getBoundingClientRect();
+
+        return rect
+          ? {
+              bottom: rect.bottom,
+              left: rect.left,
+              right: rect.right,
+              top: rect.top,
+            }
+          : null;
+      });
+
+      return { rects, viewport };
+    });
+
+    for (const rect of layout.rects) {
+      expect(rect).not.toBeNull();
+      expect(rect!.left).toBeGreaterThanOrEqual(0);
+      expect(rect!.right).toBeLessThanOrEqual(layout.viewport.width);
+      expect(rect!.top).toBeGreaterThanOrEqual(0);
+      expect(rect!.bottom).toBeLessThanOrEqual(layout.viewport.height);
+    }
+  });
+
   test("applies Safari canvas blur without a hydration warning", async ({ browser }) => {
     const context = await browser.newContext({
       userAgent:

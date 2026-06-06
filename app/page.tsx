@@ -18,20 +18,26 @@ const league = League_Spartan({
 
 export default function Home() {
   return (
-    <WavyBackground className={`max-w-4xl mx-auto pb-40 ${league.className}`}>
+    <WavyBackground className={`w-full max-w-4xl mx-auto px-4 pb-16 sm:pb-24 md:pb-40 ${league.className}`}>
       <div>
         {/* <p className="text-5xl md:text-6xl lg:text-7xl text-white font-bold inter-var text-center" style={{cursor: 'default'}}>
           Fairbanks.io
         </p> */}
-        <div id="logo" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <Image src="/logo.svg" alt="Fairbanks.io" width={553} height={142} priority />
+        <div id="logo" className="flex items-center justify-center">
+          <Image
+            src="/logo.svg"
+            alt="Fairbanks.io"
+            width={553}
+            height={142}
+            className="h-auto w-[min(72vw,553px)]"
+            priority
+          />
         </div>
         <div>
           <SubtitleGenerator />
         </div>
       </div>
-      <br/>
-      <div className="grid grid-cols-6">
+      <div className="mt-6 grid grid-cols-6 gap-3 sm:gap-4">
         <div className="icon-container">
           <TrackedLink
             href="https://github.com/jonfairbanks"
