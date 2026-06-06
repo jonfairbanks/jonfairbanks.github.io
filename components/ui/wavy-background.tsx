@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/utils/cn";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import { createNoise3D } from "simplex-noise";
 
 const defaultWaveColors = [
@@ -11,6 +11,11 @@ const defaultWaveColors = [
   "#F9AB55",
   "#F7F5FB",
 ];
+
+const subscribeToUserAgent = () => () => {};
+const getServerSafariSnapshot = () => false;
+const getSafariSnapshot = () =>
+  navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
 
 export const WavyBackground = ({
   children,
@@ -35,10 +40,11 @@ export const WavyBackground = ({
   waveOpacity?: number;
 } & React.HTMLAttributes<HTMLDivElement>) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const isSafari =
-    typeof navigator !== "undefined" &&
-    navigator.userAgent.includes("Safari") &&
-    !navigator.userAgent.includes("Chrome");
+  const isSafari = useSyncExternalStore(
+    subscribeToUserAgent,
+    getSafariSnapshot,
+    getServerSafariSnapshot
+  );
   const waveColors = useMemo(() => colors ?? defaultWaveColors, [colors]);
   const animationSpeed = useMemo(() => {
     switch (speed) {
