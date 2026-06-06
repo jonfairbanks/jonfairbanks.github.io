@@ -36,7 +36,6 @@ export const WavyBackground = ({
 } & React.HTMLAttributes<HTMLDivElement>) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const waveColors = useMemo(() => colors ?? defaultWaveColors, [colors]);
-  const safariBlurOverscan = Math.ceil(blur * 3);
   const animationSpeed = useMemo(() => {
     switch (speed) {
       case "slow":
@@ -57,23 +56,14 @@ export const WavyBackground = ({
 
     const isSafari =
       navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
-    const safariCanvasOffset = isSafari ? `-${safariBlurOverscan}px` : "";
 
     canvas.style.filter = isSafari ? `blur(${blur}px)` : "";
-    canvas.style.top = safariCanvasOffset;
-    canvas.style.right = safariCanvasOffset;
-    canvas.style.bottom = safariCanvasOffset;
-    canvas.style.left = safariCanvasOffset;
 
     const ctx = canvas.getContext("2d");
 
     if (!ctx) {
       return () => {
         canvas.style.filter = "";
-        canvas.style.top = "";
-        canvas.style.right = "";
-        canvas.style.bottom = "";
-        canvas.style.left = "";
       };
     }
 
@@ -84,8 +74,8 @@ export const WavyBackground = ({
     let animationId: number;
 
     const resizeCanvas = () => {
-      width = canvas.width = window.innerWidth + (isSafari ? safariBlurOverscan * 2 : 0);
-      height = canvas.height = window.innerHeight + (isSafari ? safariBlurOverscan * 2 : 0);
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
       ctx.filter = `blur(${blur}px)`;
     };
 
@@ -109,8 +99,9 @@ export const WavyBackground = ({
 
     const render = () => {
       ctx.fillStyle = backgroundFill || "black";
-      ctx.globalAlpha = waveOpacity || 0.5;
+      ctx.globalAlpha = 1;
       ctx.fillRect(0, 0, width, height);
+      ctx.globalAlpha = waveOpacity || 0.5;
       drawWave(5);
       animationId = requestAnimationFrame(render);
     };
@@ -123,17 +114,13 @@ export const WavyBackground = ({
       window.removeEventListener("resize", resizeCanvas);
       cancelAnimationFrame(animationId);
       canvas.style.filter = "";
-      canvas.style.top = "";
-      canvas.style.right = "";
-      canvas.style.bottom = "";
-      canvas.style.left = "";
     };
-  }, [animationSpeed, backgroundFill, blur, safariBlurOverscan, waveColors, waveOpacity, waveWidth]);
+  }, [animationSpeed, backgroundFill, blur, waveColors, waveOpacity, waveWidth]);
 
   return (
     <div
       className={cn(
-        "relative h-screen w-full overflow-hidden flex flex-col items-center justify-center",
+        "relative h-screen w-full overflow-hidden flex flex-col items-center justify-center bg-black",
         containerClassName
       )}
     >

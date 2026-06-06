@@ -160,10 +160,10 @@ test.describe("homepage", () => {
     try {
       await page.goto("/");
       await expect(page.locator("canvas#canvas")).toHaveCSS("filter", "blur(10px)");
-      await expect(page.locator("canvas#canvas")).toHaveCSS("top", "-30px");
-      await expect(page.locator("canvas#canvas")).toHaveCSS("right", "-30px");
-      await expect(page.locator("canvas#canvas")).toHaveCSS("bottom", "-30px");
-      await expect(page.locator("canvas#canvas")).toHaveCSS("left", "-30px");
+      await expect(page.locator("canvas#canvas").locator("..")).toHaveCSS(
+        "background-color",
+        "rgb(0, 0, 0)"
+      );
       await page.waitForTimeout(500);
 
       expect(consoleErrors.join("\n")).not.toContain(
