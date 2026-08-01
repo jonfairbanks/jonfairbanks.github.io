@@ -1,6 +1,16 @@
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTypescript from "eslint-config-next/typescript";
+import nextPlugin from "@next/eslint-plugin-next";
+import tseslint from "typescript-eslint";
 
-const eslintConfig = [...nextVitals, ...nextTypescript];
+const eslintConfig = tseslint.config(
+  { ignores: [".next/**", "node_modules/**", "out/**"] },
+  ...tseslint.configs.recommended,
+  {
+    plugins: { "@next/next": nextPlugin },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs["core-web-vitals"].rules,
+    },
+  }
+);
 
 export default eslintConfig;
