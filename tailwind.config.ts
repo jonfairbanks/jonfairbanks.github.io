@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss"
-import type { PluginAPI } from "tailwindcss/types/config";
+import type createPlugin from "tailwindcss/plugin";
+
+type PluginAPI = Parameters<Parameters<typeof createPlugin>[0]>[0];
 import flattenColorPalette from "tailwindcss/lib/util/flattenColorPalette";
 import tailwindcssAnimate from "tailwindcss-animate";
 
@@ -18,7 +20,7 @@ function addVariablesForColors({ addBase, theme }: Pick<PluginAPI, "addBase" | "
 }
 
 const config = {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
