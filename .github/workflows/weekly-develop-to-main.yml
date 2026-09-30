@@ -1,0 +1,128 @@
+name: Weekly Develop to Main
+
+on:
+  schedule:
+    # Match F5 and avoid the start-of-hour scheduling hot spot.
+    - cron: "17 12 * * 1"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: weekly-develop-to-main
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    name: Open and Merge Develop Release PR
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Detect Unreleased Develop Changes
+        id: changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          file_count="$(gh api "repos/$GH_REPO/compare/main...develop" --jq '.files | length')"
+          echo "has_changes=$([ "$file_count" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Create or Find Release PR
+        if: steps.changes.outputs.has_changes == 'true'
+        id: release
+        env:
+          # This token lets PR creation trigger normal CI. GITHUB_TOKEN does not.
+          GH_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          test -n "$GH_TOKEN" || { echo "PERSONAL_TOKEN is required." >&2; exit 1; }
+          pr_url="$(gh pr list --base main --head develop --state open --json url --jq '.[0].url')"
+          if [ -z "$pr_url" ]; then
+            pr_url="$(gh pr create --base main --head develop \
+              --title "Release Develop to Main" \
+              --body '## Summary
+
+          - Promote Develop directly to main after all required checks pass.
+
+          Automated weekly release, using the same promotion flow as F5.')"
+          fi
+          echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for Required Checks and Merge the Release
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          # This token also lets the merge trigger the normal Pages push workflow.
+          GH_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_URL: ${{ steps.release.outputs.pr_url }}
+        run: |
+          required_checks='["test","dependency-audit","release-source"]'
+          ready=false
+          for attempt in {1..60}; do
+            release_head_sha="$(gh pr view "$PR_URL" --json headRefOid --jq '.headRefOid')"
+            check_runs="$(gh api "repos/$GH_REPO/commits/$release_head_sha/check-runs?per_page=100")"
+            missing_checks="$(jq -r --argjson required "$required_checks" '
+              [.check_runs[] | select(.app.slug == "github-actions")]
+              | group_by(.name) | map(max_by(.id)) as $latest
+              | [$required[] as $name
+                 | select(any($latest[]; .name == $name and .status == "completed" and .conclusion == "success") | not)
+                 | $name] | .[]?
+            ' <<< "$check_runs")"
+            if [ -z "$missing_checks" ]; then
+              ready=true
+              break
+            fi
+            echo "Waiting for required checks on $release_head_sha: $missing_checks"
+            sleep 10
+          done
+          if [ "$ready" != true ]; then
+            echo "Timed out waiting for required checks: $missing_checks" >&2
+            exit 1
+          fi
+          # Normal auto-merge preserves all branch rules and checks.
+          gh pr merge "$PR_URL" --merge --auto --match-head-commit "$release_head_sha"
+          for attempt in {1..60}; do
+            state="$(gh pr view "$PR_URL" --json state --jq '.state')"
+            if [ "$state" = MERGED ]; then
+              break
+            fi
+            if [ "$state" = CLOSED ]; then
+              echo "Release PR was closed without merging." >&2
+              exit 1
+            fi
+            sleep 10
+          done
+          if [ "$state" != MERGED ]; then
+            echo "Timed out waiting for policy-gated merge of $PR_URL." >&2
+            exit 1
+          fi
+
+      - name: Wait for Pages and Check the Live Site
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_URL: ${{ steps.release.outputs.pr_url }}
+        run: |
+          release_sha="$(gh pr view "$PR_URL" --json mergeCommit --jq '.mergeCommit.oid')"
+          run_id=""
+          for attempt in {1..30}; do
+            run_id="$(gh run list --workflow publish.yml --branch main --event push --limit 20 \
+              --json databaseId,headSha \
+              --jq ".[] | select(.headSha == \"$release_sha\") | .databaseId" | head -n 1)"
+            if [ -n "$run_id" ]; then
+              break
+            fi
+            sleep 10
+          done
+          test -n "$run_id" || { echo "Pages did not start for $release_sha." >&2; exit 1; }
+          gh run watch "$run_id" --exit-status --interval 10
+          curl --fail --silent --show-error --retry 5 --retry-delay 5 --retry-all-errors --max-time 30 \
+            https://fairbanks.io/ --output /dev/null
+          curl --fail --silent --show-error --retry 5 --retry-delay 5 --retry-all-errors --max-time 30 \
+            https://fairbanks.io/site.webmanifest | jq -e '.icons | length > 0'
+          echo "Released $release_sha through $PR_URL; Pages run $run_id passed." >> "$GITHUB_STEP_SUMMARY"
