@@ -1,21 +1,17 @@
-name: setup-node
-description: "Setup Node.js ⚙️ - Cache dependencies ⚡ - Install dependencies 🔧"
+name: Setup Node.js
+description: Install locked dependencies with a supported Node.js runtime
+inputs:
+  node-version:
+    description: Node.js version
+    default: "24"
 runs:
-  using: "composite"
+  using: composite
   steps:
-    - name: Setup Node.js ⚙️
-      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+    - name: Setup Node.js
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
-        node-version: 20
-
-    - name: Cache dependencies ⚡
-      id: cache_dependencies
-      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-      with:
-        path: node_modules
-        key: node-modules-${{ hashFiles('package-lock.json') }}
-
-    - name: Install dependencies 🔧
+        node-version: ${{ inputs.node-version }}
+        cache: npm
+    - name: Install Dependencies
       shell: bash
-      if: steps.cache_dependencies.outputs.cache-hit != 'true'
       run: npm ci

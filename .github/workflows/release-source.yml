@@ -1,0 +1,29 @@
+name: Release Source
+
+on:
+  pull_request_target:
+    branches: [develop, main, master]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  release-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require Develop for Production PRs
+        env:
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          if [ "$BASE_BRANCH" = develop ]; then
+            exit 0
+          fi
+          if [ "$HEAD_BRANCH" != develop ] || [ "$HEAD_REPOSITORY" != "$REPOSITORY" ]; then
+            echo "Production PRs must come from this repository's develop branch."
+            exit 1
+          fi

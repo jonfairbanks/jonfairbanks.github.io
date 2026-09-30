@@ -3,6 +3,7 @@ version: 2
 updates:
   - package-ecosystem: "npm"
     directory: "/"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -15,6 +16,12 @@ updates:
       npm-dependencies:
         patterns:
           - "*"
+    ignore:
+      # eslint-config-next 16.2.12 uses typescript-eslint, which supports
+      # TypeScript through 6.0.x but not TypeScript 7 yet.
+      - dependency-name: "typescript"
+        update-types:
+          - "version-update:semver-major"
     labels:
       - "dependencies"
       - "npm"
@@ -23,6 +30,7 @@ updates:
 
   - package-ecosystem: "github-actions"
     directory: "/"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
       day: "monday"

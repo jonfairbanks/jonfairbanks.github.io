@@ -2,38 +2,63 @@ name: Quality
 
 on:
   pull_request:
-    branches:
-      - master
-      - main
+    branches: [develop, main, master]
   push:
-    branches:
-      - develop
+    branches: [develop, main]
 
 permissions:
   contents: read
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
 
+jobs:
+  compatibility:
+    name: test-node-${{ matrix.node }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [24, 26]
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup Node.js
         uses: ./.github/workflows/setup-node
-
-      - name: Install Playwright browsers
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
-
       - name: Lint
         run: npm run lint
-
       - name: Test
         run: npm test
-
       - name: Build
         run: npm run build
 
+  audit:
+    name: dependency-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup Node.js
+        uses: ./.github/workflows/setup-node
       - name: Audit
-        run: npm audit
+        run: npm audit --audit-level=high
+
+  test:
+    name: test
+    if: always()
+    needs: [compatibility, audit]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require Passing Checks
+        env:
+          TEST_RESULT: ${{ needs.compatibility.result }}
+          AUDIT_RESULT: ${{ needs.audit.result }}
+        run: test "$TEST_RESULT" = success && test "$AUDIT_RESULT" = success
