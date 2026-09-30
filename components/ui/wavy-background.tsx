@@ -68,7 +68,6 @@ export const WavyBackground = ({
     }
 
     const noise = createNoise3D();
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let width = 0;
     let height = 0;
     let noiseTime = 0;
@@ -104,9 +103,7 @@ export const WavyBackground = ({
       ctx.fillRect(0, 0, width, height);
       ctx.globalAlpha = waveOpacity || 0.5;
       drawWave(5);
-      if (!reduceMotion) {
-        animationId = requestAnimationFrame(render);
-      }
+      animationId = requestAnimationFrame(render);
     };
 
     resizeCanvas();
@@ -115,9 +112,7 @@ export const WavyBackground = ({
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
-      if (animationId) {
-        cancelAnimationFrame(animationId);
-      }
+      cancelAnimationFrame(animationId);
       canvas.style.filter = "";
     };
   }, [animationSpeed, backgroundFill, blur, waveColors, waveOpacity, waveWidth]);
@@ -125,7 +120,7 @@ export const WavyBackground = ({
   return (
     <div
       className={cn(
-        "relative h-screen w-full overflow-hidden bg-black",
+        "relative h-screen w-full overflow-hidden flex flex-col items-center justify-center bg-black",
         containerClassName
       )}
     >

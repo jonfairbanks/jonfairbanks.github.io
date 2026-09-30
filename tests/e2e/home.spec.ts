@@ -14,44 +14,55 @@ test.describe("homepage", () => {
     }
   });
 
-  test("renders the redesigned Fairbanks landing page", async ({ page }) => {
+  test("keeps SVG controls sized to their text", async ({ page }) => {
+    await page.goto("/");
+    const icon = page.getByRole("link", { name: "GitHub profile" }).locator("svg");
+    await expect(icon).toBeVisible();
+    const size = await icon.boundingBox();
+    expect(size).not.toBeNull();
+    expect(size!.height).toBeGreaterThanOrEqual(24);
+    expect(size!.height).toBeLessThanOrEqual(60);
+    expect(size!.width / size!.height).toBeCloseTo(1.25, 1);
+  });
+
+  test("renders the Fairbanks landing page", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page).toHaveTitle(
-      "Jon Fairbanks — Cloud Infrastructure & Developer Tooling"
-    );
+    await expect(page).toHaveTitle("Fairbanks.io");
     await expect(page.getByRole("img", { name: "Fairbanks.io" })).toBeVisible();
     await expect(
-      page.getByRole("heading", {
-        name: "I build resilient platforms for teams that ship.",
-      })
+      page.getByText("Architecting Resilience: Transforming Systems for the World of Cloud & DevOps")
     ).toBeVisible();
     await expect(page.locator("canvas#canvas")).toBeVisible();
   });
 
-  test("exposes labeled destinations and actions", async ({ page }) => {
+  test("exposes expected accessible controls", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page.getByRole("link", { name: "Explore GitHub" })).toHaveAttribute(
+    await expect(page.getByRole("link", { name: "GitHub profile" })).toHaveAttribute(
       "href",
       "https://github.com/jonfairbanks"
     );
-    await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveAttribute(
+    await expect(page.getByRole("link", { name: "LinkedIn profile" })).toHaveAttribute(
       "href",
       "https://www.linkedin.com/in/jonfairbanks"
     );
-    await expect(page.getByRole("link", { name: /Helm charts/ })).toHaveAttribute(
+    await expect(page.getByRole("link", { name: "PayPal profile" })).toHaveAttribute(
+      "href",
+      "https://paypal.me/fairbanks"
+    );
+    await expect(page.getByRole("link", { name: "Helm charts" })).toHaveAttribute(
       "href",
       "https://jonfairbanks.github.io/helm-charts"
     );
-    await expect(page.getByRole("link", { name: /Docker Hub/ })).toHaveAttribute(
+    await expect(page.getByRole("link", { name: "Docker Hub profile" })).toHaveAttribute(
       "href",
       "https://hub.docker.com/u/jonfairbanks"
     );
     await expect(page.getByRole("button", { name: "Email Jon Fairbanks" })).toBeVisible();
   });
 
-  test("tracks the primary actions in Google Analytics", async ({ page }) => {
+  test("tracks button clicks in Google Analytics", async ({ page }) => {
     await page.goto("/");
     await page.evaluate(() => {
       const analyticsWindow = window as typeof window & { dataLayer: unknown[] };
@@ -60,9 +71,11 @@ test.describe("homepage", () => {
       document.addEventListener("click", (event) => event.preventDefault(), true);
     });
 
-    await page.getByRole("link", { name: "Explore GitHub" }).click();
-    await page.getByRole("link", { name: /Helm charts/ }).click();
-    await page.getByRole("link", { name: /Docker Hub/ }).click();
+    await page.getByRole("link", { name: "GitHub profile" }).click();
+    await page.getByRole("link", { name: "LinkedIn profile" }).click();
+    await page.getByRole("link", { name: "PayPal profile" }).click();
+    await page.getByRole("link", { name: "Helm charts" }).click();
+    await page.getByRole("link", { name: "Docker Hub profile" }).click();
     await page.getByRole("button", { name: "Email Jon Fairbanks" }).click();
 
     const events = await page.evaluate(() =>
@@ -76,9 +89,27 @@ test.describe("homepage", () => {
         "event",
         "button_click",
         {
-          button_label: "Explore GitHub",
+          button_label: "GitHub profile",
           button_target: "github",
           link_url: "https://github.com/jonfairbanks",
+        },
+      ],
+      [
+        "event",
+        "button_click",
+        {
+          button_label: "LinkedIn profile",
+          button_target: "linkedin",
+          link_url: "https://www.linkedin.com/in/jonfairbanks",
+        },
+      ],
+      [
+        "event",
+        "button_click",
+        {
+          button_label: "PayPal profile",
+          button_target: "paypal",
+          link_url: "https://paypal.me/fairbanks",
         },
       ],
       [
@@ -94,7 +125,7 @@ test.describe("homepage", () => {
         "event",
         "button_click",
         {
-          button_label: "Docker Hub",
+          button_label: "Docker Hub profile",
           button_target: "docker_hub",
           link_url: "https://hub.docker.com/u/jonfairbanks",
         },
@@ -111,29 +142,68 @@ test.describe("homepage", () => {
     ]);
   });
 
-  test("stays within a single viewport on desktop and mobile", async ({ page }) => {
-    for (const viewport of [
-      { width: 1280, height: 720 },
-      { width: 390, height: 844 },
-    ]) {
-      await page.setViewportSize(viewport);
-      await page.goto("/");
+  test("stays within a single viewport", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.goto("/");
 
-      const overflow = await page.evaluate(() => ({
-        scrollWidth: document.documentElement.scrollWidth,
-        clientWidth: document.documentElement.clientWidth,
-        scrollHeight: document.documentElement.scrollHeight,
-        clientHeight: document.documentElement.clientHeight,
-      }));
+    const overflow = await page.evaluate(() => ({
+      htmlOverflowX: getComputedStyle(document.documentElement).overflowX,
+      htmlOverflowY: getComputedStyle(document.documentElement).overflowY,
+      bodyOverflowX: getComputedStyle(document.body).overflowX,
+      bodyOverflowY: getComputedStyle(document.body).overflowY,
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth,
+      scrollHeight: document.documentElement.scrollHeight,
+      clientHeight: document.documentElement.clientHeight,
+    }));
 
-      expect(overflow.scrollWidth).toBe(overflow.clientWidth);
-      expect(overflow.scrollHeight).toBe(overflow.clientHeight);
-      await expect(page.getByRole("button", { name: "Email Jon Fairbanks" })).toBeVisible();
-      await expect(page.getByRole("link", { name: /Docker Hub/ })).toBeVisible();
+    expect(overflow).toMatchObject({
+      htmlOverflowX: "hidden",
+      htmlOverflowY: "hidden",
+      bodyOverflowX: "hidden",
+      bodyOverflowY: "hidden",
+    });
+    expect(overflow.scrollWidth).toBe(overflow.clientWidth);
+    expect(overflow.scrollHeight).toBe(overflow.clientHeight);
+  });
+
+  test("keeps the landing content reachable on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+
+    const layout = await page.evaluate(() => {
+      const logo = document.querySelector("#logo");
+      const controls = document.querySelectorAll(".icon-container");
+      const viewport = {
+        width: document.documentElement.clientWidth,
+        height: document.documentElement.clientHeight,
+      };
+      const rects = [logo, ...Array.from(controls)].map((element) => {
+        const rect = element?.getBoundingClientRect();
+
+        return rect
+          ? {
+              bottom: rect.bottom,
+              left: rect.left,
+              right: rect.right,
+              top: rect.top,
+            }
+          : null;
+      });
+
+      return { rects, viewport };
+    });
+
+    for (const rect of layout.rects) {
+      expect(rect).not.toBeNull();
+      expect(rect!.left).toBeGreaterThanOrEqual(0);
+      expect(rect!.right).toBeLessThanOrEqual(layout.viewport.width);
+      expect(rect!.top).toBeGreaterThanOrEqual(0);
+      expect(rect!.bottom).toBeLessThanOrEqual(layout.viewport.height);
     }
   });
 
-  test("applies Safari canvas blur without hydration errors", async ({ browser }) => {
+  test("applies Safari canvas blur without a hydration warning", async ({ browser }) => {
     const context = await browser.newContext({
       userAgent:
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15",
@@ -149,13 +219,17 @@ test.describe("homepage", () => {
 
     try {
       await page.goto("/");
-      await expect(page.locator("canvas#canvas")).toHaveCSS("filter", "blur(14px)");
+      await expect(page.locator("canvas#canvas")).toHaveCSS("filter", "blur(10px)");
+      await expect(page.locator("canvas#canvas").locator("..")).toHaveCSS(
+        "background-color",
+        "rgb(0, 0, 0)"
+      );
       await page.waitForTimeout(500);
 
-      expect(consoleErrors.join("\n")).not.toContain("Hydration failed");
       expect(consoleErrors.join("\n")).not.toContain(
         "hydrated but some attributes of the server rendered HTML didn't match"
       );
+      expect(consoleErrors.join("\n")).not.toContain("Hydration failed");
     } finally {
       await context.close();
     }
