@@ -20,14 +20,6 @@ updates:
           - "minor"
           - "patch"
     ignore:
-      # ESLint 10 removes APIs still used by Next's React lint plugin.
-      - dependency-name: "eslint"
-        update-types:
-          - "version-update:semver-major"
-      # Tailwind 4 needs a separate PostCSS and stylesheet migration.
-      - dependency-name: "tailwindcss"
-        update-types:
-          - "version-update:semver-major"
       # eslint-config-next 16.2.12 uses typescript-eslint, which supports
       # TypeScript through 6.0.x but not TypeScript 7 yet.
       - dependency-name: "typescript"
