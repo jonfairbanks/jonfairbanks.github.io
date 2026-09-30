@@ -1,6 +1,30 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("homepage", () => {
+  test("serves the manifest and its referenced icons", async ({ request }) => {
+    const response = await request.get("/site.webmanifest");
+    expect(response.status()).toBe(200);
+    const manifest = await response.json();
+    expect(manifest.name).toBe("Fairbanks.io");
+    expect(manifest.icons).toHaveLength(2);
+    for (const icon of manifest.icons) {
+      const iconResponse = await request.get(icon.src);
+      expect(iconResponse.status()).toBe(200);
+      expect(iconResponse.headers()["content-type"]).toContain("image/png");
+    }
+  });
+
+  test("keeps SVG controls sized to their text", async ({ page }) => {
+    await page.goto("/");
+    const icon = page.getByRole("link", { name: "GitHub profile" }).locator("svg");
+    await expect(icon).toBeVisible();
+    const size = await icon.boundingBox();
+    expect(size).not.toBeNull();
+    expect(size!.height).toBeGreaterThanOrEqual(24);
+    expect(size!.height).toBeLessThanOrEqual(60);
+    expect(size!.width / size!.height).toBeCloseTo(1.25, 1);
+  });
+
   test("renders the Fairbanks landing page", async ({ page }) => {
     await page.goto("/");
 

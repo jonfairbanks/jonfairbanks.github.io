@@ -65,6 +65,41 @@ Deployment flow:
 
 The live custom domain is [fairbanks.io](https://fairbanks.io).
 
+## CSS Delivery
+
+The single-page export uses Next.js `experimental.inlineCss` to include its
+styles in the HTML and avoid blocking stylesheet requests. The icons use only
+their required SVG sizing rules. This flag is experimental and works only in
+production builds. Next.js does not yet recommend it for production; verify the
+exported page after upgrades. Disable the flag to restore external stylesheets.
+
+## Asset Caching
+
+GitHub Pages does not apply `next.config` response headers to the static export.
+For versioned assets, configure this rule in Cloudflare:
+
+1. Open **fairbanks.io → Cache → Cache Rules → Cache Response Rules**.
+2. Create a rule named **Cache Versioned Next.js Assets**.
+3. Select **Custom Filter Expression → Edit Expression** and enter:
+
+   ```text
+   (http.host eq "fairbanks.io" and starts_with(http.request.uri.path, "/_next/static/") and http.response.code eq 200)
+   ```
+
+4. Select **Modify Cache-Control Directives**. Set `public`, set `max-age` to
+   `31536000` seconds, and set `immutable`. Leave **Cloudflare Only** off for
+   each directive so browsers receive the new values.
+5. Place the rule after any broader rule that changes these directives, then
+   deploy it.
+
+Copy a current `/_next/static/` asset URL from the browser's Network panel and
+check its headers with `curl -I`. Expect HTTP 200 and
+`Cache-Control: public, max-age=31536000, immutable` (directive order may vary).
+HTML, the manifest, unversioned images, and error responses do not match this
+rule. To roll back, disable it.
+
+See [Cloudflare's Cache Response Rules guide](https://developers.cloudflare.com/cache/how-to/cache-response-rules/create-dashboard/).
+
 ## CI
 
 [quality.yml](.github/workflows/quality.yml) runs on pull requests to `master`/`main` and pushes to `develop`.
@@ -87,3 +122,13 @@ Google Analytics is configured in [app/layout.tsx](app/layout.tsx). Outbound pro
 - `button_target`
 - `button_label`
 - `link_url`
+
+## Dependency and Release Flow
+
+Use Node.js 24 LTS (`nvm use`). CI also tests Node.js 26.
+
+Feature, fix, and Dependabot branches target `develop`. Dependabot auto-merge is limited to patch and minor updates into `develop`; major updates need review. Quality requires lint, browser tests, builds, and `npm audit --audit-level=high`.
+
+Promote releases with a PR directly from `develop` to `main`. The required `release-source` check rejects other sources. Both long-lived branches require the `test` and `release-source` checks before merging. Only pushes to `main` publish GitHub Pages.
+
+The production branch is currently named `master`. Rename it to `main` when activating this flow. Keep Tailwind 3 and ESLint 9 as the integration branch's compatibility choices. Dependency security fixes update their compatible lockfile ranges without forcing major upgrades.
