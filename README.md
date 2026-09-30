@@ -135,7 +135,7 @@ The production branch is `main`. Keep Tailwind 3 and ESLint 9 as the integration
 
 ### Weekly Promotion
 
-`.github/workflows/weekly-develop-to-main.yml` copies F5's Monday 12:17 UTC schedule (5:17 AM Pacific during daylight time, 4:17 AM during standard time). It can also run manually from `main`.
+`.github/workflows/weekly-develop-to-main.yml` runs Mondays at 2:15 PM Pacific using the `America/Los_Angeles` time zone, which handles daylight saving changes. It can also run manually from `main`.
 
 The job skips unchanged source files, creates or reuses a direct `develop` → `main` PR, waits for `test`, `dependency-audit`, and `release-source`, then enables normal merge-commit auto-merge. It watches the Pages deployment for that exact merge commit and checks the live homepage and manifest.
 
