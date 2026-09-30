@@ -65,6 +65,41 @@ Deployment flow:
 
 The live custom domain is [fairbanks.io](https://fairbanks.io).
 
+## CSS Delivery
+
+The single-page export uses Next.js `experimental.inlineCss` to include its
+styles in the HTML and avoid blocking stylesheet requests. The icons use only
+their required SVG sizing rules. This flag is experimental and works only in
+production builds. Next.js does not yet recommend it for production; verify the
+exported page after upgrades. Disable the flag to restore external stylesheets.
+
+## Asset Caching
+
+GitHub Pages does not apply `next.config` response headers to the static export.
+For versioned assets, configure this rule in Cloudflare:
+
+1. Open **fairbanks.io → Cache → Cache Rules → Cache Response Rules**.
+2. Create a rule named **Cache Versioned Next.js Assets**.
+3. Select **Custom Filter Expression → Edit Expression** and enter:
+
+   ```text
+   (http.host eq "fairbanks.io" and starts_with(http.request.uri.path, "/_next/static/") and http.response.code eq 200)
+   ```
+
+4. Select **Modify Cache-Control Directives**. Set `public`, set `max-age` to
+   `31536000` seconds, and set `immutable`. Leave **Cloudflare Only** off for
+   each directive so browsers receive the new values.
+5. Place the rule after any broader rule that changes these directives, then
+   deploy it.
+
+Copy a current `/_next/static/` asset URL from the browser's Network panel and
+check its headers with `curl -I`. Expect HTTP 200 and
+`Cache-Control: public, max-age=31536000, immutable` (directive order may vary).
+HTML, the manifest, unversioned images, and error responses do not match this
+rule. To roll back, disable it.
+
+See [Cloudflare's Cache Response Rules guide](https://developers.cloudflare.com/cache/how-to/cache-response-rules/create-dashboard/).
+
 ## CI
 
 [quality.yml](.github/workflows/quality.yml) runs on pull requests to `master`/`main` and pushes to `develop`.
