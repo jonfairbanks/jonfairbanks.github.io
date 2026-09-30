@@ -132,3 +132,13 @@ Feature, fix, and Dependabot branches target `develop`. Dependabot auto-merge is
 Promote releases with a PR directly from `develop` to `main`. The required `release-source` check rejects other sources. Both long-lived branches require the `test`, `dependency-audit`, and `release-source` checks before merging. Only pushes to `main` publish GitHub Pages.
 
 The production branch is `main`. Keep Tailwind 3 and ESLint 9 as the integration branch's compatibility choices. Dependency security fixes update their compatible lockfile ranges without forcing major upgrades.
+
+### Weekly Promotion
+
+`.github/workflows/weekly-develop-to-main.yml` copies F5's Monday 12:17 UTC schedule (5:17 AM Pacific during daylight time, 4:17 AM during standard time). It can also run manually from `main`.
+
+The job skips unchanged source files, creates or reuses a direct `develop` → `main` PR, waits for `test`, `dependency-audit`, and `release-source`, then enables normal merge-commit auto-merge. It watches the Pages deployment for that exact merge commit and checks the live homepage and manifest.
+
+`PERSONAL_TOKEN` must have repository Contents and Pull Requests write access plus Actions read access. PR creation and merging use it so GitHub emits normal CI and deployment events. The workflow never checks out PR code or bypasses a failed check.
+
+F5's production branch requires passing checks without requiring the release head to contain every production merge commit. Match that setting on `main` when activating weekly promotion; keep strict current-base checks on `develop`. Otherwise later release PRs can remain blocked solely by merge history.
