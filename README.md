@@ -131,7 +131,7 @@ Feature, fix, and Dependabot branches target `develop`. Dependabot auto-merge is
 
 Promote releases with a PR directly from `develop` to `main`. The required `release-source` check rejects other sources. Both long-lived branches require the `test`, `dependency-audit`, and `release-source` checks before merging. Only pushes to `main` publish GitHub Pages.
 
-The production branch is `main`. Keep Tailwind 3 and ESLint 9 as the integration branch's compatibility choices. Dependency security fixes update their compatible lockfile ranges without forcing major upgrades.
+The production branch is `main`. Dependabot groups npm patch and minor updates; major updates get individual PRs. Tailwind 4 uses `@tailwindcss/postcss` and explicitly loads the existing theme configuration. ESLint 10 uses the official `@eslint/compat` wrapper while Next's React, import, and accessibility plugins retain older peer ranges. TypeScript major updates remain deferred until the lint toolchain supports them.
 
 ### Weekly Promotion
 
