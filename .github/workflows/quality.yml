@@ -47,8 +47,12 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup Node.js
         uses: ./.github/workflows/setup-node
+      - name: Test Audit Policy
+        run: node --test tests/unit/dependency-audit.test.mjs
       - name: Audit
-        run: npm audit --audit-level=high
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/dependency-audit.mjs
 
   test:
     name: test
