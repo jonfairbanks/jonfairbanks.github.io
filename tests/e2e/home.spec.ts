@@ -36,6 +36,18 @@ test.describe("homepage", () => {
     await expect(page.locator("canvas#canvas")).toBeVisible();
   });
 
+  test("finishes revealing every subtitle word", async ({ page }) => {
+    await page.goto("/");
+
+    const firstWord = page.getByText("Architecting", { exact: true });
+    const words = firstWord.locator("..").locator("span");
+    await expect(words).toHaveCount(11);
+
+    for (const word of await words.all()) {
+      await expect(word).toHaveCSS("opacity", "1", { timeout: 10_000 });
+    }
+  });
+
   test("exposes expected accessible controls", async ({ page }) => {
     await page.goto("/");
 
