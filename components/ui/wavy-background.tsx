@@ -54,37 +54,35 @@ export const WavyBackground = ({
       return;
     }
 
-    const isSafari =
-      navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
-
-    canvas.style.filter = isSafari ? `blur(${blur}px)` : "";
-
     const ctx = canvas.getContext("2d");
 
     if (!ctx) {
-      return () => {
-        canvas.style.filter = "";
-      };
+      return;
     }
 
     const noise = createNoise3D();
     let width = 0;
     let height = 0;
     let noiseTime = 0;
-    let animationId: number;
+    let animationId = 0;
+    let lastFrameTime: number | undefined;
+    const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const resizeCanvas = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      ctx.filter = `blur(${blur}px)`;
+      const nextWidth = window.innerWidth;
+      const nextHeight = window.innerHeight;
+
+      if (width === nextWidth && height === nextHeight) return;
+
+      width = canvas.width = nextWidth;
+      height = canvas.height = nextHeight;
+      drawFrame();
     };
 
     const drawWave = (count: number) => {
-      noiseTime += animationSpeed;
-
       for (let i = 0; i < count; i++) {
         ctx.beginPath();
-        ctx.lineWidth = waveWidth || 50;
+        ctx.lineWidth = waveWidth ?? 50;
         ctx.strokeStyle = waveColors[i % waveColors.length];
 
         for (let x = 0; x < width; x += 5) {
@@ -97,25 +95,46 @@ export const WavyBackground = ({
       }
     };
 
-    const render = () => {
-      ctx.fillStyle = backgroundFill || "black";
+    const drawFrame = () => {
+      ctx.fillStyle = backgroundFill ?? "black";
       ctx.globalAlpha = 1;
       ctx.fillRect(0, 0, width, height);
-      ctx.globalAlpha = waveOpacity || 0.5;
+      ctx.globalAlpha = waveOpacity ?? 0.5;
       drawWave(5);
+    };
+
+    const render = (timestamp: number) => {
+      // Keep motion consistent across refresh rates and avoid jumps after a pause.
+      const elapsed = lastFrameTime === undefined ? 0 : Math.min(timestamp - lastFrameTime, 50);
+      lastFrameTime = timestamp;
+      noiseTime += animationSpeed * elapsed / (1000 / 60);
+      drawFrame();
       animationId = requestAnimationFrame(render);
     };
 
+    const updateAnimation = () => {
+      cancelAnimationFrame(animationId);
+      lastFrameTime = undefined;
+      if (!motionPreference.matches && !document.hidden) {
+        animationId = requestAnimationFrame(render);
+      } else {
+        drawFrame();
+      }
+    };
+
     resizeCanvas();
-    render();
+    updateAnimation();
+    motionPreference.addEventListener("change", updateAnimation);
+    document.addEventListener("visibilitychange", updateAnimation);
     window.addEventListener("resize", resizeCanvas);
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
       cancelAnimationFrame(animationId);
-      canvas.style.filter = "";
+      motionPreference.removeEventListener("change", updateAnimation);
+      document.removeEventListener("visibilitychange", updateAnimation);
     };
-  }, [animationSpeed, backgroundFill, blur, waveColors, waveOpacity, waveWidth]);
+  }, [animationSpeed, backgroundFill, waveColors, waveOpacity, waveWidth]);
 
   return (
     <div
@@ -126,6 +145,8 @@ export const WavyBackground = ({
     >
       <canvas
         className="absolute inset-0 z-0"
+        style={{ filter: `blur(${blur}px)` }}
+        aria-hidden="true"
         ref={canvasRef}
         id="canvas"
       ></canvas>
