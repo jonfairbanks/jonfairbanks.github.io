@@ -17,6 +17,11 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
+    {
+      name: "firefox",
+      testMatch: "**/background.spec.ts",
+      use: { ...devices["Desktop Firefox"], viewport: { width: 390, height: 844 } },
+    },
   ],
   webServer: {
     command: "npm run dev",
