@@ -20,7 +20,7 @@ export default defineConfig({
     {
       name: "firefox",
       testMatch: "**/background.spec.ts",
-      use: { ...devices["Desktop Firefox"] },
+      use: { ...devices["Desktop Firefox"], viewport: { width: 390, height: 844 } },
     },
   ],
   webServer: {
